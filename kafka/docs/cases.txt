@@ -1,0 +1,57 @@
+Case 1: Unordered Parallel Event Messaging
+
+<- start two consumers having the same consumer group and let them read from test-topic (kcat -C -F kcat.conf)
+>kcat -F kcat.conf -C -f '[C1 %t, %p, %o] %k (%K) %T : %s (%S)\n' -G tcgc test-topic &
+>kcat -F kcat.conf -C -f '[C2 %t, %p, %o] %k (%K) %T : %s (%S)\n' -G tcgc test-topic &
+
+- Show the topic description
+> bin/kafka-topics.sh --bootstrap-server localhost:9092,localhost:9093,localhost:9094 --describe --exclude-internal
+
+- Show the consumer groups for the topic (bin/kafka-consumer-groups)
+> bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092,localhost:9093,localhost:9094 --group tcgc --describe --members --verbose
+
+- produce a set of messages without a key on a topic (kcat -P) and take the input from 
+>kcat -F kcat.conf -P -p -1 -t test-topic -l case/random/nokeys.txt 
+ 
+#case/random/nokeys.txt contains line entries a..z
+
+
+Case 2: Ordered parallel event messaging
+
+<- Keep the current consumers for test-topic running
+
+- produce a set of messages with a business key on topic test-topic
+kcat -F kcat.conf -P -K , -p -1 -t test-topic -l case/random/flight-keyst.txt
+
+#case/random/flight-keyst.txt contains
+AF104-20220315,{"flightnr": "AF104", "sdate": "20220314", "expax-tot": 79}
+AF104-20220315,{"flightnr": "AF104", "sdate": "20220314", "expax-tot": 80}
+AF104-20220315,{"flightnr": "AF104", "sdate": "20220314", "expax-tot": 81}
+AF104-20220315,{"flightnr": "AF104", "sdate": "20220314", "expax-tot": 82}
+AF104-20220315,{"flightnr": "AF104", "sdate": "20220314", "expax-tot": 83}
+AF104-20220315,{"flightnr": "AF104", "sdate": "20220314", "expax-tot": 84}
+AF215-20220315,{"flightnr": "AF215", "sdate": "20220314", "expax-tot": 39}
+AF215-20220315,{"flightnr": "AF215", "sdate": "20220314", "expax-tot": 40}
+AF215-20220315,{"flightnr": "AF215", "sdate": "20220314", "expax-tot": 41}
+AF215-20220315,{"flightnr": "AF215", "sdate": "20220314", "expax-tot": 42}
+AF215-20220315,{"flightnr": "AF215", "sdate": "20220314", "expax-tot": 43}
+
+
+case 3: Stop/Kill a broker and repeat case 1 and 2 and compare the results
+
+- consuming is blocked because the belong to the same group (tcgc)
+
+Adding two extra consumers with another groupId helps
+
+- kcat -F kcat.conf -C -f '[C2RF31 %t, %p, %o] %k (%K) %T : %s (%S)\n' -G tcgc-rf3 test-topic-rf3 &
+- kcat -F kcat.conf -C -f '[C2RF33 %t, %p, %o] %k (%K) %T : %s (%S)\n' -G tcgc-rf3 test-topic-rf3 &
+
+
+case 4: Check rebalancing with consumer taking too much time (>5000) to process the message
+
+- intellij Java
+
+Rebalance using 1000 with timeout 5000 max.poll.interval.ms
+Rebalance freeze using 120000 for max.poll.interval.ms and broker restart
+
+[2022-03-14 01:08:51,178] INFO [GroupCoordinator 0]: Member consumer-tcgc-rf3-1-584a20d1-fe1a-4d77-8711-6dca5bd27d99 in group tcgc-rf3 has failed, removing it from the group (kafka.coordinator.group.GroupCoordinator)

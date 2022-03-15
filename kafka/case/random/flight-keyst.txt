@@ -1,0 +1,11 @@
+AF104-20220315,{"flightnr": "AF104", "sdate": "20220314", "expax-tot": 79}
+AF104-20220315,{"flightnr": "AF104", "sdate": "20220314", "expax-tot": 80}
+AF104-20220315,{"flightnr": "AF104", "sdate": "20220314", "expax-tot": 81}
+AF104-20220315,{"flightnr": "AF104", "sdate": "20220314", "expax-tot": 82}
+AF104-20220315,{"flightnr": "AF104", "sdate": "20220314", "expax-tot": 83}
+AF104-20220315,{"flightnr": "AF104", "sdate": "20220314", "expax-tot": 84}
+AF215-20220315,{"flightnr": "AF215", "sdate": "20220314", "expax-tot": 39}
+AF215-20220315,{"flightnr": "AF215", "sdate": "20220314", "expax-tot": 40}
+AF215-20220315,{"flightnr": "AF215", "sdate": "20220314", "expax-tot": 41}
+AF215-20220315,{"flightnr": "AF215", "sdate": "20220314", "expax-tot": 42}
+AF215-20220315,{"flightnr": "AF215", "sdate": "20220314", "expax-tot": 43}

@@ -1,0 +1,29 @@
+#brew install kcat
+#https://github.com/edenhill/kcat
+> kcat -F kcat.conf -C -f '[C2 %t, %p, %o] %k (%K) %T : %s (%S)\n' -G tcgc test-topic-rf3 &
+[1] 31972
+% Reading configuration from file kcat.conf
+% Waiting for group rebalance
+% Group tcgc rebalanced (memberid rdkafka-f1985797-a10b-468f-a7f2-6773f28928a7): assigned: test-topic-rf3 [2], test-topic-rf3 [3]
+% Reached end of topic test-topic-rf3 [2] at offset 87
+% Reached end of topic test-topic-rf3 [3] at offset 30
+
+jobs
+[1]+  Running                 kcat -F kcat.conf -C -f '[C2 %t, %p, %o] %k (%K) %T : %s (%S)\n' -G tcgc test-topic-rf3 &
+
+> kcat -F kcat.conf -P -K , -p -1 -t test-topic-rf3 -l case/random/flight-keyst.txt 
+% Reading configuration from file kcat.conf
+
+#Contents kcat.conf
+bootstrap.servers=localhost:9092,localhost:9093,localhost:9094
+broker.address.family=v4
+
+> bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092,localhost:9093,localhost:9094 --group tcgc --describe --members --verbose
+GROUP           CONSUMER-ID                                  HOST            CLIENT-ID       #PARTITIONS     ASSIGNMENT
+tcgc            rdkafka-a22695c6-8629-48e1-b958-67d9da05d8d2 /127.0.0.1      rdkafka         4               test-topic-rf3(0,1,2,3)
+
+
+#Look inside the log file
+> bin/kafka-dump-log.sh --deep-iteration --files /tmp/kafka-log-2/test-topic-rf3-3/00000000000000000000.log 
+
+find /tmp/kafka-log* -name "*.log"|grep test-topic-rf3| while read file; do bin/kafka-dump-log.sh --print-data-log --skip-record-metadata --files $file; done

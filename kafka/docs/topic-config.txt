@@ -1,0 +1,17 @@
+> bin/kafka-topics.sh --bootstrap-server localhost:9092 --create --config delete.retention.ms=108000000 --topic test-topic-rf3 --replication-factor 3 --partitions 4
+> bin/kafka-topics.sh --bootstrap-server localhost:9092 --create --config delete.retention.ms=108000000 --topic test-topic --replication-factor 1 --partitions 4
+> #bin/kafka-topics.sh --bootstrap-server localhost:9092 --delete --topic test-topic-rf3
+> #bin/kafka-topics.sh --bootstrap-server localhost:9092 --delete --topic test-topic
+
+> bin/kafka-topics.sh --bootstrap-server localhost:9092,localhost:9093,localhost:9094 --describe --exclude-internal
+Topic: test-topic	TopicId: x9a8QD3NRdCPbvvsAOOYoQ	PartitionCount: 4	ReplicationFactor: 1	Configs: segment.bytes=1073741824
+	Topic: test-topic	Partition: 0	Leader: 2	Replicas: 2	Isr: 2
+	Topic: test-topic	Partition: 1	Leader: 1	Replicas: 1	Isr: 1
+	Topic: test-topic	Partition: 2	Leader: 0	Replicas: 0	Isr: 0
+	Topic: test-topic	Partition: 3	Leader: 2	Replicas: 2	Isr: 2
+Topic: test-topic-rf3	TopicId: 7vpsQfksT0yA33Gj91H_bw	PartitionCount: 4	ReplicationFactor: 3	Configs: segment.bytes=1073741824,delete.retention.ms=108000000
+	Topic: test-topic-rf3	Partition: 0	Leader: 1	Replicas: 1,0,2	Isr: 1,0,2
+	Topic: test-topic-rf3	Partition: 1	Leader: 0	Replicas: 0,2,1	Isr: 0,2,1
+	Topic: test-topic-rf3	Partition: 2	Leader: 2	Replicas: 2,1,0	Isr: 2,1,0
+	Topic: test-topic-rf3	Partition: 3	Leader: 1	Replicas: 1,2,0	Isr: 1,2,0
+
